@@ -6,6 +6,15 @@ from airflow.providers.amazon.aws.hooks.s3 import S3Hook
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 import json
 
+create_schema_table = """
+CREATE SCHEMA IF NOT EXISTS bronze;
+
+CREATE TABLE IF NOT EXISTS bronze.mobile_customers_raw (
+    id SERIAL PRIMARY KEY,
+    raw_payload JSONB,
+    ingestion_timestamp TIMESTAMP
+);
+"""
 
 truncate_query = """TRUNCATE bronze.mobile_customers_raw RESTART IDENTITY;"""
 
@@ -32,6 +41,7 @@ def download_from_s3(**context):
 
     records = [(json.dumps(record), execution_ts) for record in data]
 
+    cursor.execute(create_schema_table)
     cursor.execute(truncate_query)
     cursor.executemany(insert_query, records)
     conn.commit()

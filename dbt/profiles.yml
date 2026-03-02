@@ -8,5 +8,5 @@ qversity:
       password: qversity-admin
       port: 5432
       dbname: qversity
-      schema: public
+      schema: "public"
       threads: 1 

@@ -1,0 +1,141 @@
+version: 2
+
+models:
+
+  # -------------------------
+  # LOCATION
+  # -------------------------
+  - name: silver_location
+    columns:
+      - name: location_id
+        tests:
+          - not_null
+          - unique
+
+      - name: city
+        tests:
+          - not_null
+
+      - name: country
+        tests:
+          - not_null
+
+
+  # -------------------------
+  # CUSTOMERS
+  # -------------------------
+  - name: silver_customers
+    columns:
+      - name: customer_real_id
+        tests:
+          - not_null
+          - unique
+
+      - name: email
+        tests:
+          - not_null
+
+      - name: location_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_location')
+              field: location_id
+
+
+  # -------------------------
+  # LINES
+  # -------------------------
+  - name: silver_lines
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - customer_id
+            - phone_number
+
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+
+      - name: phone_number
+        tests:
+          - not_null
+
+      - name: customer_real_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_customers')
+              field: customer_real_id
+
+
+  # -------------------------
+  # SUBSCRIPTION
+  # -------------------------
+  - name: silver_subscription
+    columns:
+      - name: subscription_id
+        tests:
+          - not_null
+          - unique
+
+      - name: customer_id
+        tests:
+          - not_null
+
+      - name: phone_number
+        tests:
+          - not_null
+
+      - name: line_id
+        tests:
+        - not_null
+        - unique
+
+
+
+  # -------------------------
+  # SUBSCRIPTION SERVICES
+  # -------------------------
+  - name: silver_subscription_services
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - subscription_id
+            - service_name
+
+    columns:
+      - name: subscription_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('silver_subscription')
+              field: subscription_id
+
+      - name: service_name
+        tests:
+          - not_null
+
+
+  # -------------------------
+  # PAYMENT HISTORY
+  # -------------------------
+  - name: silver_payment_history
+    columns:
+      - name: payment_id
+        tests:
+          - not_null
+          - unique
+
+      - name: payment_date
+        tests:
+          - not_null
+
+      - name: payment_amount
+        tests:
+          - not_null
+
+      - name: customer_id
+        tests:
+          - not_null

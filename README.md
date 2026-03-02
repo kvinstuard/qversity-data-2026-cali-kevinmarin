@@ -35,6 +35,18 @@ This project implements a Bronze-Silver-Gold data lakehouse architecture:
 └── README.md             # This file
 ```
 
+
+## Model
+- The data were converted to the third normal form.
+- Entity-Relationship Diagram (ERD) showing the structure and relationships between all tables.
+
+![ERD](docs/ERD.png)
+
+<p align="center">
+  <img src="docs/ERD.png" width="600"/>
+</p>
+
+
 ## Quick Start
 
 ### Prerequisites
