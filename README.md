@@ -42,10 +42,6 @@ This project implements a Bronze-Silver-Gold data lakehouse architecture:
 
 ![ERD](docs/ERD.png)
 
-<p align="center">
-  <img src="docs/ERD.png" width="600"/>
-</p>
-
 
 ## Quick Start
 

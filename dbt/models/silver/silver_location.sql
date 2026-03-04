@@ -3,8 +3,8 @@
 with base as (
 
     select
-        trim(raw_payload->>'city')    as city,
-        trim(raw_payload->>'country') as country
+        lower(trim(raw_payload->>'city'))    as city,
+        lower(trim(raw_payload->>'country')) as country
     from {{ ref('bronze_mobile_customers_raw') }}
 
 ),
