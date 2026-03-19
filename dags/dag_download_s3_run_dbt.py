@@ -4,6 +4,7 @@ from airflow.operators.python import PythonOperator
 from airflow.providers.amazon.aws.sensors.s3 import S3KeySensor
 from airflow.providers.amazon.aws.hooks.s3 import S3Hook
 from airflow.providers.postgres.hooks.postgres import PostgresHook
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 import json
 
 create_schema_table = """
@@ -58,7 +59,7 @@ default_args = {
 }
 
 with DAG(
-    dag_id='dag_download_from_s3_v01',
+    dag_id='dag_download_s3_run_dbt_v01',
     default_args=default_args,
     start_date=datetime(2026, 2, 24),
     schedule='0 0 * * *',
@@ -80,4 +81,9 @@ with DAG(
         python_callable=download_from_s3
     )
 
-    wait_for_file >> download_task
+    trigger_dbt = TriggerDagRunOperator(
+        task_id="trigger_dbt_transformations",
+        trigger_dag_id="dbt_transformations"
+    )
+
+    wait_for_file >> download_task >> trigger_dbt
