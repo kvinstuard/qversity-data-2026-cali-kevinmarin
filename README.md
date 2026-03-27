@@ -63,6 +63,11 @@ cp env.example .env
 docker compose up -d
 ```
 
+```bash
+# Create dbt image to connect with airflow
+docker build -t mi_dbt_image -f docker/dbt/Dockerfile .
+```
+
 ## Access Points
 
 - **Airflow UI**: http://localhost:8080 (admin/admin)
@@ -165,4 +170,8 @@ docker compose down -v
 # Remove images
 docker compose down --rmi all
 ```
+## Assumptions and decisions
 
+- It is assumed that the customer id does not represent a customer, but rather a line or contract, since there are duplicate customer ids with different information.
+
+- It was decided to create a DBT image by copying the local files, so the image must be rebuilt every time the local files are changed. This was done to simplify its use within Airflow, since Airflow has a task that uses this image.

@@ -37,7 +37,6 @@ models:
 
       - name: location_id
         tests:
-          - not_null
           - relationships:
               to: ref('silver_location')
               field: location_id

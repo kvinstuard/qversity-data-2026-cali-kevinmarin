@@ -16,7 +16,19 @@ with DAG(
     command="dbt run --project-dir /app/dbt --profiles-dir /app/dbt",
     network_mode="qversity_default",
     auto_remove=True,
+    mount_tmp_dir=False,
     docker_url="unix://var/run/docker.sock",
 )
 
-dbt_run
+  dbt_test = DockerOperator(
+    task_id="dbt_test",
+    image="mi_dbt_image",
+    command="dbt test --project-dir /app/dbt --profiles-dir /app/dbt",
+    network_mode="qversity_default",
+    auto_remove=True,
+    mount_tmp_dir=False,
+    docker_url="unix://var/run/docker.sock",
+)
+
+
+dbt_run >> dbt_test
