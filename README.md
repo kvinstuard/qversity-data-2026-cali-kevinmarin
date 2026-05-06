@@ -1,4 +1,4 @@
-# Qversity Project
+# ETL Project
 
 A data local data platform using Docker Compose with Airflow, PostgreSQL, dbt, and Python.
 
@@ -108,7 +108,7 @@ dbt docs serve
 ### Database Access
 ```bash
 # Connect to PostgreSQL
-docker compose exec postgres psql -U qversity-admin -d qversity
+docker compose exec postgres psql -U admin -d postgres_etl
 
 # View created schemas
 \dn

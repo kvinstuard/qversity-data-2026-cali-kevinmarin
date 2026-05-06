@@ -25,12 +25,12 @@ insert_query = """
     """
 
 def download_from_s3(**context):
-    hook = S3Hook(aws_conn_id='public_s3_qbika')
+    hook = S3Hook(aws_conn_id='public_s3')
     execution_ts = context['data_interval_start']
 
     obj = hook.get_key(
     key='mobile_customers_messy_dataset.json',
-    bucket_name='qversity-raw-public-data'
+    bucket_name='raw-public-data'
     )
 
     content = obj.get()['Body'].read().decode('utf-8')
@@ -68,9 +68,9 @@ with DAG(
 
     wait_for_file = S3KeySensor(
         task_id='s3_sensor',
-        bucket_name='qversity-raw-public-data',
+        bucket_name='raw-public-data',
         bucket_key='mobile_customers_messy_dataset.json',
-        aws_conn_id='public_s3_qbika',
+        aws_conn_id='public_s3',
         poke_interval=60,
         timeout=600,
         mode="reschedule"

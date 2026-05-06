@@ -4,9 +4,9 @@ services:
   postgres:
     image: postgres:15
     environment:
-      POSTGRES_USER: qversity-admin
-      POSTGRES_PASSWORD: qversity-admin
-      POSTGRES_DB: qversity
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -18,7 +18,7 @@ services:
     depends_on:
       - postgres
     environment:
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://qversity-admin:qversity-admin@postgres/qversity
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER}:POSTGRES_PASSWORD@postgres/${POSTGRES_DB}
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
       _PIP_ADDITIONAL_REQUIREMENTS: dbt-core dbt-postgres pandas
@@ -32,7 +32,7 @@ services:
     command: >
       bash -c "
       airflow db init &&
-      airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com &&
+      airflow users create --username ${_AIRFLOW_WWW_USER_USERNAME} --password ${_AIRFLOW_WWW_USER_USERNAME} --firstname Admin --lastname User --role Admin --email admin@example.com &&
       airflow webserver & airflow scheduler
       "
 
@@ -41,7 +41,7 @@ services:
     volumes:
       - ./dbt:/dbt
       - ./data:/data
-    working_dir: /dbt
+    working_dir: ${DBT_PROJECT_DIR}
     command: >
       bash -c "
       pip install dbt-core dbt-postgres &&
@@ -50,7 +50,7 @@ services:
     depends_on:
       - postgres
     environment:
-      DBT_PROFILES_DIR: /dbt
+      DBT_PROFILES_DIR: ${DBT_PROFILES_DIR}
 
 volumes:
   postgres_data:
